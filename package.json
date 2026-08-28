@@ -1,0 +1,26 @@
+{
+  "name": "agentos",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"shared,api,web\" -c \"blue,green,magenta\" \"npm run dev -w @agentos/shared\" \"npm run dev -w @agentos/api\" \"npm run dev -w @agentos/web\"",
+    "dev:web": "npm run dev -w @agentos/web",
+    "dev:api": "npm run dev -w @agentos/api",
+    "dev:shared": "npm run dev -w @agentos/shared",
+    "build": "npm run build -w @agentos/shared && npm run build -w @agentos/api && npm run build -w @agentos/web",
+    "build:shared": "npm run build -w @agentos/shared",
+    "test": "npm test -w @agentos/api",
+    "typecheck": "tsc -b",
+    "clean": "rimraf node_modules apps/*/node_modules packages/*/node_modules apps/*/dist packages/*/dist"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.3"
+  }
+}
