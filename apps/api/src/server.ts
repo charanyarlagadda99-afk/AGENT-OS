@@ -30,7 +30,6 @@ app.use(helmet());
 
 const corsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    // Allow requests with no origin (like server-to-server, Render health checks, or curl)
     if (!origin) return callback(null, true);
     if (process.env.FRONTEND_URL === '*') return callback(null, true);
 
@@ -43,7 +42,7 @@ const corsOptions = {
     if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
       callback(null, true);
     } else {
-      callback(null, true); // Permissive CORS fallback for production Vercel previews
+      callback(null, true);
     }
   },
   credentials: true,
@@ -53,6 +52,33 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(morgan('combined', { stream: { write: (msg) => logger.info(msg.trim()) } }));
+
+// Root welcome message so browser users don't see a blank page
+app.get('/', (_req, res) => {
+  res.setHeader('Content-Type', 'text/html');
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>AgentOS Backend API</title>
+        <style>
+          body { font-family: monospace; background: #09090b; color: #fafafa; padding: 40px; }
+          .card { background: #18181b; border: 1px solid #27272a; padding: 24px; border-radius: 12px; max-width: 600px; }
+          h1 { color: #06b6d4; margin-top: 0; }
+          a { color: #10b981; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h1>🤖 AgentOS API Server</h1>
+          <p>The backend execution engine is <strong>ONLINE</strong>.</p>
+          <p>Health Check: <a href="/api/health">/api/health</a></p>
+          <p>Frontend UI: Deployed on Vercel</p>
+        </div>
+      </body>
+    </html>
+  `);
+});
 
 // Production Health Check Endpoint (Required by Render & Antigravity specification)
 app.get('/api/health', (_req, res) => {
