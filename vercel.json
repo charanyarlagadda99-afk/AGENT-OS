@@ -1,14 +1,14 @@
 {
   "version": 2,
-  "buildCommand": "npm run build --workspace=@agentos/shared && npm run build --workspace=@agentos/web",
-  "outputDirectory": "dist",
+  "buildCommand": "npm run build -w @agentos/shared && npm run build -w @agentos/web",
+  "outputDirectory": "apps/web/dist",
   "routes": [
     {
       "src": "/assets/(.*)",
       "headers": {
         "cache-control": "public, max-age=31536000, immutable"
       },
-      "dest": "/assets/$1"
+      "dest": "/apps/web/dist/assets/$1"
     },
     {
       "handle": "filesystem"
