@@ -20,11 +20,11 @@ AS $$
   LIMIT 1;
 $$;
 
--- Security hardening: Revoke direct PostgREST RPC access from anon / PUBLIC roles
-REVOKE EXECUTE ON FUNCTION public.is_org_member(uuid) FROM PUBLIC, anon;
-REVOKE EXECUTE ON FUNCTION public.get_org_role(uuid) FROM PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION public.is_org_member(uuid) TO authenticated, service_role;
-GRANT EXECUTE ON FUNCTION public.get_org_role(uuid) TO authenticated, service_role;
+-- Security hardening: Revoke direct PostgREST RPC access from PUBLIC, anon, and authenticated roles
+REVOKE EXECUTE ON FUNCTION public.is_org_member(uuid) FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.get_org_role(uuid) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.is_org_member(uuid) TO service_role;
+GRANT EXECUTE ON FUNCTION public.get_org_role(uuid) TO service_role;
 
 -- Enable RLS
 ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
