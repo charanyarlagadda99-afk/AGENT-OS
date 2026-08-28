@@ -20,6 +20,12 @@ AS $$
   LIMIT 1;
 $$;
 
+-- Security hardening: Revoke direct PostgREST RPC access from anon / PUBLIC roles
+REVOKE EXECUTE ON FUNCTION public.is_org_member(uuid) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.get_org_role(uuid) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.is_org_member(uuid) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.get_org_role(uuid) TO authenticated, service_role;
+
 -- Enable RLS
 ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE organization_members ENABLE ROW LEVEL SECURITY;
@@ -39,7 +45,7 @@ ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
 
 -- Organizations
 CREATE POLICY "org_select" ON organizations FOR SELECT TO authenticated USING (public.is_org_member(id));
-CREATE POLICY "org_insert" ON organizations FOR INSERT TO authenticated WITH CHECK (true); -- Requires custom logic later or trigger for initial admin
+CREATE POLICY "org_insert" ON organizations FOR INSERT TO authenticated WITH CHECK (length(trim(name)) > 0 AND length(trim(slug)) > 0 AND (SELECT auth.uid()) IS NOT NULL);
 CREATE POLICY "org_update" ON organizations FOR UPDATE TO authenticated USING (public.get_org_role(id) = 'admin');
 CREATE POLICY "org_delete" ON organizations FOR DELETE TO authenticated USING (public.get_org_role(id) = 'admin');
 
