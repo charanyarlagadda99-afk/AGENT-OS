@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCreateMission } from '../hooks/useMissions';
 import { useAgents } from '../hooks/useAgents';
-import { Target, ArrowLeft, Sparkles, Plus, Trash2 } from 'lucide-react';
+import { Target, ArrowLeft, Sparkles, Loader2, AlertCircle } from 'lucide-react';
 import { getDemoAgents } from '../lib/demoData';
 
 export const MissionNew = () => {
@@ -10,6 +10,9 @@ export const MissionNew = () => {
   const createMission = useCreateMission();
   const { data: apiAgents = [] } = useAgents();
   const agents = apiAgents.length > 0 ? apiAgents : getDemoAgents();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     title: 'Make demo-broken-repo production-ready',
@@ -50,11 +53,20 @@ export const MissionNew = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    createMission.mutate(formData, {
-      onSuccess: () => navigate('/missions'),
-    });
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      await createMission.mutateAsync(formData);
+      navigate('/missions');
+    } catch (err: any) {
+      console.warn('Backend API unavailable or unconfigured, proceeding in Demo Mode:', err);
+      navigate('/missions');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -72,6 +84,13 @@ export const MissionNew = () => {
           <p className="text-xs text-zinc-400 font-mono mt-1">Assign an objective, target workspace, priority, and explicit verification gates.</p>
         </div>
       </div>
+
+      {errorMessage && (
+        <div className="p-3 bg-red-950/60 border border-red-800/80 text-red-200 rounded-lg text-xs font-mono flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+          {errorMessage}
+        </div>
+      )}
 
       {/* Preset Cards */}
       <div className="space-y-3">
@@ -148,9 +167,17 @@ export const MissionNew = () => {
 
         <button
           type="submit"
-          className="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-medium rounded-lg transition-all shadow-lg shadow-cyan-600/20"
+          disabled={isSubmitting}
+          className="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 disabled:bg-zinc-800 text-white font-medium rounded-lg transition-all shadow-lg shadow-cyan-600/20 flex items-center justify-center gap-2 cursor-pointer"
         >
-          Dispatch Agent Mission
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin text-cyan-200" />
+              Dispatching Mission...
+            </>
+          ) : (
+            'Dispatch Agent Mission'
+          )}
         </button>
       </form>
     </div>
