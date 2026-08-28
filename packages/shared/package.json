@@ -13,9 +13,9 @@
     }
   },
   "scripts": {
-    "build": "tsc -b",
-    "dev": "tsc -b -w --preserveWatchOutput",
-    "clean": "rimraf dist .tsbuildinfo"
+    "build": "npx tsc -b",
+    "dev": "npx tsc -b -w --preserveWatchOutput",
+    "clean": "npx rimraf dist .tsbuildinfo"
   },
   "dependencies": {
     "zod": "^3.24.2"
