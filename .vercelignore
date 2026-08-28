@@ -1,0 +1,5 @@
+# Ignore backend, demo, docs, and non-frontend directories on Vercel
+apps/api/
+demo/
+docs/
+supabase/
