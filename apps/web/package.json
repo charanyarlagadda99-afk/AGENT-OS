@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run build --workspace=@agentos/shared && npx tsc -b && vite build",
+    "build": "npm run build --workspace=@agentos/shared && (npx --no-install tsc -b || tsc -b) && vite build",
     "preview": "vite preview",
-    "clean": "npx rimraf dist .tsbuildinfo"
+    "clean": "rimraf dist .tsbuildinfo"
   },
   "dependencies": {
     "@agentos/shared": "*",

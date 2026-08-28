@@ -13,15 +13,15 @@
     }
   },
   "scripts": {
-    "build": "npx tsc -b",
-    "dev": "npx tsc -b -w --preserveWatchOutput",
-    "clean": "npx rimraf dist .tsbuildinfo"
+    "build": "npx --no-install tsc -b || tsc -b",
+    "dev": "tsc -b -w --preserveWatchOutput",
+    "clean": "rimraf dist .tsbuildinfo"
   },
   "dependencies": {
+    "typescript": "^5.7.3",
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "rimraf": "^6.0.1",
-    "typescript": "^5.7.3"
+    "rimraf": "^6.0.1"
   }
 }
