@@ -2,6 +2,5 @@
   "version": 2,
   "installCommand": "npm install",
   "buildCommand": "npm run build --workspace=@agentos/shared && npm run build --workspace=@agentos/web",
-  "outputDirectory": "dist",
-  "framework": "vite"
+  "outputDirectory": "dist"
 }
