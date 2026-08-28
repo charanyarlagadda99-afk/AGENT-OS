@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run build --workspace=@agentos/shared && (npx --no-install tsc -b || tsc -b) && vite build && node -e \"const fs=require('fs'); fs.mkdirSync('../dist', {recursive: true}); fs.cpSync('dist', '../dist', {recursive: true}); fs.mkdirSync('dist', {recursive: true});\"",
+    "build": "npm run build --workspace=@agentos/shared && (npx --no-install tsc -b || tsc -b) && vite build && node copy-dist.js",
     "preview": "vite preview",
     "clean": "rimraf dist .tsbuildinfo"
   },
